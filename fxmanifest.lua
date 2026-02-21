@@ -2,10 +2,10 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-name        'RDE Advanced Shop System V3.1 - Boss Edition'
+name        'RDE Advanced Shop System V1.0.0 - Boss Edition'
 author      'RDE Development | Claude AI'
 description 'Ultra-realistic shop system with fixed ox_inventory UI, StateBag sync, robbery & NPC mechanics'
-version     '3.1.0'
+version     '1.0.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -32,7 +32,7 @@ dependencies {
 
 --[[
     ╔══════════════════════════════════════════════════════════════════╗
-    ║           🔥 V3.1.0 — BOSS EDITION (ALL BUGS FIXED)              ║
+    ║           🔥 V1.0.0 — ALPHA (ALL BUGS FIXED)                     ║
     ╠══════════════════════════════════════════════════════════════════╣
     ║                                                                  ║
     ║  🔴 CRITICAL FIXES                                               ║
@@ -69,4 +69,5 @@ dependencies {
     ║  ✅ Config.Shops.ped timing: 20s cleanup, 60s respawn            ║
     ║                                                                  ║
     ╚══════════════════════════════════════════════════════════════════╝
+
 ]]
