@@ -1,4 +1,4 @@
--- RDE Advanced Shop System V3.1.0 - Client
+-- RDE Advanced Shop System V1.0.0 - Client
 -- Framework: ox_core v2 + ox_inventory
 -- FIXES: All callback name mismatches, Lua syntax errors, robbery system, police alert
 
@@ -1161,4 +1161,5 @@ exports('GetShop',   function(shopId) return shops[shopId] end)
 exports('IsAdmin',   function() return isAdmin end)
 exports('OpenShop',  function(shopId) openShopInventory(shopId) end)
 
-print('^2[RDE | SHOPS V3.1]^7 Client loaded — all critical bugs fixed ✓')
+
+print('^2[RDE | SHOPS V1.0.0]^7 Client loaded — all critical bugs fixed ✓')
