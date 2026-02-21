@@ -1,4 +1,4 @@
--- RDE Advanced Shop System V3.1.0 - Server
+-- RDE Advanced Shop System V1.0.0 - Server
 -- Framework: ox_core v2 + ox_inventory
 -- FIXES: Critical shop open bug, all missing callbacks, police alert, payout return
 
@@ -987,4 +987,5 @@ lib.callback.register('rde_shops:server:getAllShops', function(source)
     return buildShopSnapshot()
 end)
 
-print('^2[RDE | SHOPS V3.2]^7 Server loaded ✓')
+
+print('^2[RDE | SHOPS V1.0.0]^7 Server loaded ✓')
