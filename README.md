@@ -1,4 +1,5 @@
 # 🏪 RDE Advanced Shop System — V1.0.0 Alpha
+![photo_2026-02-22_03-19-31](https://github.com/user-attachments/assets/d6b99ba5-4500-4787-910a-8af4cb35fc89)
 
 [![Version](https://img.shields.io/badge/version-1.0.0-red?style=for-the-badge&logo=github)](https://github.com/RedDragonElite)
 [![License](https://img.shields.io/badge/license-RDE%20Black%20Flag%20v6.66-black?style=for-the-badge)](LICENSE)
