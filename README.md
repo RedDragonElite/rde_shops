@@ -433,7 +433,7 @@ Confirm `Config.Robbery.policeNotify = true` and that the jobs listed in `police
 #                                                                                 #
 #      .:: RED DRAGON ELITE (RDE)  -  BLACK FLAG SOURCE LICENSE v6.66 ::.         #
 #                                                                                 #
-#   PROJECT:    RDE ADVANCED SHOP SYSTEM V1.0.0 ALPHA                               #
+#   PROJECT:    RDE ADVANCED SHOP SYSTEM V1.0.0 ALPHA                             #
 #   ARCHITECT:  .:: RDE ⧌ Shin [△ ᛋᛅᚱᛒᛅᚾᛏᛋ ᛒᛁᛏᛅ ▽] ::. | https://rd-elite.com     #
 #   ORIGIN:     https://github.com/RedDragonElite                                 #
 #                                                                                 #
