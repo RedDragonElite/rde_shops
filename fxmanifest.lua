@@ -2,15 +2,16 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-name        'RDE Advanced Shop System V1.0.0 - Boss Edition'
-author      'RDE Development | Claude AI'
-description 'Ultra-realistic shop system with fixed ox_inventory UI, StateBag sync, robbery & NPC mechanics'
-version     '1.0.0'
+name        'RDE Advanced Shop System V2.0.0'
+author      'RDE Development | rd-elite.com'
+description 'Ultra-realistic shop system — ox_core + ox_inventory + ox_target + Shop Templates + Debounced Refresh'
+version     '2.0.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
     '@ox_core/lib/init.lua',
-    'config.lua'
+    'config.lua',
+    'data/shop_templates.lua'   -- Shop Templates (client + server)
 }
 
 client_scripts {
@@ -31,43 +32,61 @@ dependencies {
 }
 
 --[[
-    ╔══════════════════════════════════════════════════════════════════╗
-    ║           🔥 V1.0.0 — ALPHA (ALL BUGS FIXED)                     ║
-    ╠══════════════════════════════════════════════════════════════════╣
-    ║                                                                  ║
-    ║  🔴 CRITICAL FIXES                                               ║
-    ║  ✅ FIX: Shop inventory öffnet sich jetzt KORREKT                ║
-    ║     → forceOpenInventory → OpenInventory (korrektes API)         ║
-    ║     → Stable shop IDs statt Timestamp-Spam                       ║
-    ║     → RegisterShop bei Startup, nicht bei jedem Klick            ║
-    ║     → Stock depletes beim Kauf (RemoveItem aus Stash)            ║
-    ║  ✅ FIX: checkAdminPermission Callback existiert jetzt           ║
-    ║     → Admin-Permission auf Init-Check war immer false!           ║
-    ║  ✅ FIX: getTillMoney Callback existiert jetzt                   ║
-    ║     → Till-Check war komplett broken                             ║
-    ║  ✅ FIX: checkRobbery Callback existiert jetzt                   ║
-    ║     → Robbery war komplett broken                                ║
-    ║  ✅ FIX: completeRobbery gibt Payout korrekt zurück              ║
-    ║  ✅ FIX: Config.Robbery.pedAnimDict/pedAnimName definiert        ║
-    ║     → Client referenzierte undefined Config-Felder               ║
-    ║                                                                  ║
-    ║  🟡 MEDIUM FIXES                                                 ║
-    ║  ✅ FIX: itemInfo.client?.image → Lua-konforme Syntax            ║
-    ║  ✅ FIX: Police Alert sendet jetzt korrektes table Format        ║
-    ║  ✅ FIX: #shops auf sparse table → tableCount()                  ║
-    ║  ✅ FIX: Memory Leak bei RegisterShop eliminiert                 ║
-    ║  ✅ FIX: SetModelAsNoLongerNeeded nach Ped-Spawn                 ║
-    ║                                                                  ║
-    ║  ✨ IMPROVEMENTS                                                 ║
-    ║  ✅ refreshOxShop(): Live-Update nach Preisänderung              ║
-    ║  ✅ StateBag Listener für late-join Spieler                      ║
-    ║  ✅ Stock depletes in Echtzeit beim Kauf                         ║
-    ║  ✅ ox:playerSpawned permission cache reset                      ║
-    ║  ✅ Particle effect timeout guard                                ║
-    ║  ✅ Robbery: NPC hebt Hände hoch während Timer läuft             ║
-    ║  ✅ Analytics zeigt jetzt auch Till-Kontostand                   ║
-    ║  ✅ Config.Shops.ped timing: 20s cleanup, 60s respawn            ║
-    ║                                                                  ║
-    ╚══════════════════════════════════════════════════════════════════╝
-
+    ╔══════════════════════════════════════════════════════════════════════╗
+    ║          🔥 V4.8.0 — CUSTOMER BUY FIX                                ║
+    ╠══════════════════════════════════════════════════════════════════════╣
+    ║                                                                      ║
+    ║  🔴 CRITICAL FIX                                                     ║
+    ║  ✅ FIX: "You can not open this inventory" beim Einkaufen            ║
+    ║     Root cause: ox_inventory:openInventory('shop', data) expects     ║
+    ║     `data` to be a TABLE with `.type` field, NOT a raw string.       ║
+    ║     The previous fix #2 in v4.7 changed the call from                ║
+    ║     `{ type = oxShopId }` to a bare string, which made               ║
+    ║     ox_inventory's server callback fail silently (Shops[nil] = nil). ║
+    ║     This broke ALL customer purchases while admin "Drag & Drop       ║
+    ║     Stock" kept working because stash uses a different API.          ║
+    ║                                                                      ║
+    ║  Bonus improvements:                                                  ║
+    ║  ✅ Added `locations` array to RegisterShop call. This gives us:     ║
+    ║     • shop.id format "rde_shop_N 1" → enables pattern matching       ║
+    ║       in buyItem hook (shopType/shopId parsing)                      ║
+    ║     • Optional 10m distance check by ox_inventory itself             ║
+    ║     • Aligns with overextended's documented shop registration format ║
+    ║                                                                      ║
+    ║  Zero database changes. Zero config changes. Pure code fix.          ║
+    ║                                                                      ║
+    ╠══════════════════════════════════════════════════════════════════════╣
+    ║          🔥 V4.7.0 — FULL OX STACK EDITION (PREVIOUS RELEASE)        ║
+    ╠══════════════════════════════════════════════════════════════════════╣
+    ║                                                                      ║
+    ║  🔴 CRITICAL FIXES                                                   ║
+    ║  ✅ FIX: Ped schwimmt in der Luft                                    ║
+    ║     → z - 1.0 Offset entfernt                                        ║
+    ║     → PlaceObjectOnGroundProperly() nach Spawn                       ║
+    ║     → Scenario VOR FreezeEntityPosition starten                      ║
+    ║     → Wait(200) nach CreatePed für Physics-Settling                  ║
+    ║  ✅ FIX: player.addMoney() existiert nicht in ox_core                ║
+    ║     → player.getAccount().addBalance({amount=X}) korrekt             ║
+    ║  ✅ FIX: targetPlayer.get('job') ist ESX-Pattern                     ║
+    ║     → Ersetzt durch player.getGroups() + policeJobs-Check            ║
+    ║     → Cops-Nearby funktioniert jetzt korrekt                         ║
+    ║  ✅ FIX: AddEventHandler('ox_inventory:buyItem') → registerHook      ║
+    ║     → Korrekte buyItem Hook-API mit inventoryFilter                  ║
+    ║  ⚠️  REGRESSION (fixed in v4.8): openInventory shop arg → string     ║
+    ║                                                                      ║
+    ║  ✨ ENHANCEMENTS                                                     ║
+    ║  ✅ NEW: ox_inventory Drag & Drop für Admin Stock                     ║
+    ║     → Stash pro Shop registriert                                     ║
+    ║     → swapItems Hook synct DB automatisch bei Drag-In                ║
+    ║     → Preis-Dialog beim ersten Drag-In                               ║
+    ║  ✅ NEW: rde_aipd Integration                                        ║
+    ║     → LogCrime('ROBBERY') bei Robbery Start (Client)                 ║
+    ║     → police:nostr:crime Event bei Robbery Complete (Server)         ║
+    ║     → Wanted Level Sync via rde_aipd wenn aktiv                      ║
+    ║  ✅ IMPROVED: Robbery System komplett überarbeitet                   ║
+    ║     → Realistischere Phasen: Einschüchterung → Countdown → Beute     ║
+    ║     → Clerk-Reaktion (Hands Up / Fight Back) verbessert              ║
+    ║     → Flee-Detection korrekt (Blick weg = Abbruch)                   ║
+    ║                                                                      ║
+    ╚══════════════════════════════════════════════════════════════════════╝
 ]]

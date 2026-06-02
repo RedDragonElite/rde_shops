@@ -89,7 +89,7 @@ Config.Shops = {
     ped = {
         invincible = false,
         frozen = true,
-        blockevents = true,         -- WICHTIG: true = NPC ignoriert alle externen Events (kein Fliehen)
+        blockevents = true,
         scenario = 'WORLD_HUMAN_STAND_MOBILE',
 
         scaredScenarios = {
@@ -109,26 +109,25 @@ Config.Shops = {
         label = nil
     },
     till = {
-        moneyAccumulationRate = 0.15,   -- Anteil jedes Kaufpreises der in die Kasse geht
+        moneyAccumulationRate = 0.15,
         maxTillMoney = 5000,
         enableParticles = true,
         particleDict = 'scr_rcbarry2',
         particleName = 'scr_clown_appears',
 
-        -- Passives Kassengeld — simuliert NPC-Kunden auch ohne echte Spieler
         passiveIncome = {
             enabled   = true,
-            interval  = 300,        -- alle X Sekunden (300 = 5 Minuten)
-            minAmount = 50,         -- mind. $50 pro Tick
-            maxAmount = 250,        -- max. $250 pro Tick
+            interval  = 300,
+            minAmount = 50,
+            maxAmount = 250,
         },
     },
     restock = {
         enabled   = true,
-        interval  = 600,            -- alle X Sekunden (600 = 10 Minuten)
-        amountMin = 1,              -- mind. X Einheiten pro Item
-        amountMax = 5,              -- max. X Einheiten pro Item
-        maxStock  = 100,            -- Obergrenze pro Item (wird nie überschritten)
+        interval  = 600,
+        amountMin = 1,
+        amountMax = 5,
+        maxStock  = 100,
     },
     reputation = {
         enabled = true,
@@ -165,6 +164,11 @@ Config.Robbery = {
     aimTime = 5.0,              -- Zeit zum Zielen in Sekunden
     cooldown = 600,             -- Cooldown zwischen Robberies (Sekunden)
 
+    -- Payout Settings — FIX: waren komplett nicht in config definiert → crash in completeRobbery
+    payoutPercentage = 0.75,    -- 75% des till-Geldes als Beute
+    minPayout = 100,            -- mind. $100 Beute
+    maxPayout = 3000,           -- max. $3000 Beute
+
     -- NPC Verhalten
     npc = {
         dontFlee = true,
@@ -178,9 +182,14 @@ Config.Robbery = {
         giveMoneyOnDeath = true,
     },
 
-    -- NPC Hände-hoch / Unterwerfungs-Animation (FIX: war in Config nicht definiert)
-    pedAnimDict   = 'random@arrests@busted',
-    pedAnimName   = 'idle_a',
+    -- NPC Hände-hoch / Unterwerfungs-Animation
+    pedAnimDict = 'random@arrests@busted',
+    pedAnimName = 'idle_a',
+
+    -- Camera Shake on completion — FIX: waren nicht definiert → crash in completeRobbery
+    screenShake          = true,
+    screenShakeIntensity = 0.3,
+    screenShakeDuration  = 1500,
 
     -- Progressive Difficulty
     progressive = {
@@ -195,61 +204,144 @@ Config.Robbery = {
     minPolice = 0,
     dispatchRadius = 300.0,
     wantedLevel = 2,
-
-    -- Payout
-    minPayout = 100,
-    maxPayout = 1000,
-    payoutPercentage = 0.8,
-
-    speedBonus = {
-        enabled = true,
-        maxBonus = 0.2,
-        timeThreshold = 2.0
-    },
-
-    -- Animations & Effects
-    screenShake = true,
-    screenShakeIntensity = 0.3,
-    screenShakeDuration = 1000,
-
-    evidence = {
-        enabled = true,
-        dropChance = 0.3,
-        items = {'fingerprint', 'bullet_casing', 'dna_sample'}
-    }
 }
 
 -- ████████████████████████████████████████████████████████████████
--- █▀▀▀▀▀█ BLIP SPRITES & COLORS █▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+-- █▀▀▀▀▀█ UI CONFIGURATION █▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
 -- ████████████████████████████████████████████████████████████████
+-- ── Shops & Dienstleistungen ──────────────────────────────────────────────
 Config.BlipSprites = {
-    {label = '🏪 Store',         value = 52},
-    {label = '🔫 Gun Shop',      value = 110},
-    {label = '👔 Clothing',      value = 73},
-    {label = '🍺 Bar',           value = 93},
-    {label = '💊 Pharmacy',      value = 153},
-    {label = '🔧 Garage',        value = 446},
-    {label = '🍔 Restaurant',    value = 106},
-    {label = '📱 Electronics',   value = 521},
-    {label = '💎 Jewelry',       value = 617},
-    {label = '🏦 Bank',          value = 108},
-    {label = '⛽ Gas Station',   value = 361},
-    {label = '🛒 Supermarket',   value = 52},
-    {label = '⭐ Custom',        value = 1}
+    -- Shops / Handel
+    {label = '🏪 Store / Supermarkt',          value = 52},
+    {label = '🔫 Waffenladen (Gun Shop)',       value = 110},
+    {label = '🎯 Schießstand',                  value = 119},
+    {label = '🎯 Schießstand + Waffenladen',    value = 313},
+    {label = '👔 Kleidung',                     value = 73},
+    {label = '💈 Friseur',                      value = 71},
+    {label = '💉 Tattoo',                       value = 75},
+    {label = '💊 Apotheke / Erste Hilfe',       value = 153},
+    {label = '🍺 Bar / Kneipe',                 value = 93},
+    {label = '🎬 Kino',                         value = 135},
+    {label = '🎭 Comedy Club',                  value = 102},
+    {label = '🎵 Musikclub',                    value = 136},
+    {label = '🃏 Cabaret / Nachtclub',          value = 99},
+    {label = '💃 Strip Club',                   value = 121},
+    {label = '🍔 Restaurant / Essen',           value = 106},
+    {label = '📱 Laptop / Electronics',         value = 521},
+    {label = '💎 Juwelier',                     value = 617},
+    {label = '⛽ Tankstelle / Jerrycan',        value = 361},
+    {label = '🚗 Autowerkstatt / Tuning',       value = 72},
+    {label = '🔧 Benny\'s / Custom Garage',     value = 446},
+    {label = '🧽 Autowaschanlage',              value = 100},
+    {label = '🚕 Taxi',                         value = 198},
+    -- Immobilien & Gebäude
+    {label = '🏠 Haus / Safehouse',             value = 40},
+    {label = '🏢 Büro / Office',                value = 475},
+    {label = '🏭 Lager / Warehouse',            value = 473},
+    {label = '🏗️ Bunker',                       value = 557},
+    {label = '✈️ Hangar',                       value = 359},
+    {label = '🚁 Helipad',                      value = 360},
+    {label = '⚓ Dock / Marina',                value = 356},
+    {label = '🛥️ Yacht',                        value = 455},
+    {label = '🏦 Bank',                         value = 108},
+    {label = '🔒 Polizeistation (blau)',         value = 137},
+    {label = '🏥 Krankenhaus / Arzt',           value = 61},
+    {label = '🏌️ Golfplatz',                    value = 109},
+    {label = '🎪 Jahrmarkt',                    value = 266},
+    {label = '🎓 Flugschule',                   value = 90},
+    {label = '🏋️ Yoga',                         value = 197},
+    -- Fahrzeuge
+    {label = '🚛 LKW / Truck',                  value = 477},
+    {label = '🚌 Bus',                          value = 513},
+    {label = '🚒 Feuerwehr',                    value = 321},
+    {label = '🚁 Hubschrauber',                 value = 64},
+    {label = '⛵ Boot',                         value = 410},
+    {label = '🚤 Jetski / Seashark',            value = 471},
+    {label = '🚜 Quad',                         value = 512},
+    {label = '🏎️ Sports Car',                   value = 523},
+    {label = '🚂 Zug',                          value = 459},
+    {label = '🪂 Fallschirm',                   value = 377},
+    -- Kriminalität / Schwarzmarkt
+    {label = '💊 Drogen',                       value = 51},
+    {label = '📦 Paket / Lieferung',            value = 501},
+    {label = '💰 Bargeld / Cash',               value = 272},
+    {label = '🔫 Waffenhandel (illegal)',        value = 147},
+    {label = '🚗 Autoklau',                     value = 50},
+    {label = '🌿 Weed Stash',                   value = 140},
+    {label = '💣 Bombe',                        value = 44},
+    {label = '☠️ Totenkopf / Rampage',           value = 84},
+    {label = '🔪 Messer / Attentat',            value = 62},
+    {label = '🎭 Maske',                        value = 362},
+    {label = '📍 Schmuggel / Contraband',       value = 478},
+    {label = '🏭 Produktion Weed',              value = 496},
+    {label = '🏭 Produktion Crack',             value = 497},
+    {label = '🏭 Produktion Meth',              value = 499},
+    {label = '💵 Geldpresse',                   value = 500},
+    -- Rennen & Sport
+    {label = '🏁 Rennen allgemein',             value = 309},
+    {label = '🏁 Rennflagge',                   value = 38},
+    {label = '🏎️ Rennen Land',                  value = 315},
+    {label = '✈️ Rennen Luft',                   value = 314},
+    {label = '⛵ Rennen Wasser',                value = 316},
+    {label = '🏍️ Rennen Bike',                  value = 376},
+    {label = '🏃 Rennen Fuß',                   value = 379},
+    {label = '⭐ Stunt',                        value = 488},
+    {label = '🎾 Tennis',                       value = 122},
+    {label = '🏀 Basketball',                   value = 95},
+    {label = '🎯 Darts',                        value = 103},
+    {label = '🎱 Pool / Billard',               value = 142},
+    {label = '🤼 Armdrücken',                   value = 311},
+    -- Sonstiges / Generisch
+    {label = '⭐ Stern / Custom',               value = 1},
+    {label = '📍 POI / Marker',                 value = 162},
+    {label = 'ℹ️ Info',                         value = 407},
+    {label = '🔑 Garage (verkauf)',             value = 369},
+    {label = '📷 Kamera',                       value = 184},
+    {label = '🔧 Werkzeug / Repair',            value = 402},
+    {label = '📦 Lager (verkauf)',              value = 474},
+    {label = '🏢 Büro (verkauf)',               value = 476},
+    {label = '🏠 Haus (verkauf)',               value = 267},
+    {label = '💼 Business',                     value = 374},
+    {label = '🌐 Internet Café',                value = 111},
+    {label = '🚐 Sicherheitsvan',               value = 67},
+    {label = '🧲 Schrottplatz',                 value = 527},
+    {label = '🏆 Trophy',                       value = 546},
+    {label = '🎁 Geschenk / Package',           value = 781},
 }
 
+-- ── Alle GTA-Blip-Farben (build 3258) ────────────────────────────────────
 Config.BlipColors = {
-    {label = '⚪ White',   value = 0},
-    {label = '🔴 Red',     value = 1},
-    {label = '🟢 Green',   value = 2},
-    {label = '🔵 Blue',    value = 3},
-    {label = '⚫ Dark',    value = 4},
-    {label = '🟡 Yellow',  value = 5},
-    {label = '🟣 Purple',  value = 27},
-    {label = '🟠 Orange',  value = 47},
-    {label = '🟤 Brown',   value = 54},
-    {label = '💖 Pink',    value = 8}
+    -- Basis
+    {label = '⚪ Weiß',              value = 0},
+    {label = '🔴 Rot',               value = 1},
+    {label = '🟢 Grün',              value = 2},
+    {label = '🔵 Blau (hell)',        value = 3},
+    {label = '⚫ Schwarz / Dunkel',   value = 4},
+    {label = '🟡 Gelb',              value = 5},
+    {label = '🩵 Hellblau',          value = 6},
+    {label = '🟣 Lila (violett)',     value = 7},
+    {label = '💗 Rosa / Pink',        value = 8},
+    {label = '🟠 Orange (hell)',      value = 17},
+    {label = '🟠 Orange',            value = 47},
+    {label = '🟤 Braun',             value = 54},
+    {label = '🩶 Grau (hell)',        value = 19},
+    {label = '⬛ Dunkelgrau',        value = 40},
+    -- Spezielle GTA-Farben
+    {label = '🔵 Marineblau / Navy',  value = 83},
+    {label = '🩵 Cyan / Türkis',      value = 25},
+    {label = '🟢 Dunkelgrün',        value = 52},
+    {label = '🔴 Dunkelrot / Purpur', value = 27},
+    {label = '🟡 Gold / Goldgelb',    value = 46},
+    {label = '🤍 Cremeweiß',          value = 21},
+    {label = '🟣 Magenta',           value = 34},
+    {label = '🩷 Hellrosa',           value = 30},
+    {label = '🔵 Königsblau',         value = 38},
+    {label = '🟢 Mintgrün',           value = 43},
+    {label = '🟠 Bernstein',          value = 60},
+    {label = '🔵 Indigoblau',         value = 79},
+    {label = '🩶 Silber',             value = 13},
 }
+
 
 -- ████████████████████████████████████████████████████████████████
 -- █▀▀▀▀▀█ PED MODELS █▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
